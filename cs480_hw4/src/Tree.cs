@@ -29,7 +29,11 @@ public class Tree {
 
   private List<Attribute> availableAttributes_ = Enum.GetValues<Attribute>().ToList();
 
-  public void Update(List<Data> dataList, Node node, Strategy strategy) {
+  public void Build(List<Data> dataList, Strategy strategy) {
+    Build_Impl(dataList, Root, strategy);
+  }
+  
+  private void Build_Impl(List<Data> dataList, Node node, Strategy strategy) {
     if (availableAttributes_.Count == 0) {
       node.Profitable = false;
       return;
@@ -49,10 +53,32 @@ public class Tree {
     availableAttributes_.Remove(attribute);
 
     foreach (var child in node.Children) {
-      Update(dataList, child, strategy);
+      Build_Impl(dataList, child, strategy);
     }
     
     availableAttributes_.Add(attribute);
+  }
+  
+  public void Assign(Data data) {
+    Assign_Impl(data, Root);
+  }
+  
+  private void Assign_Impl(Data data, Node node) {
+    foreach (var child in node.Children.Where(
+               child => child.Attribute != null 
+                        && child.Decision == data.Attributes[child.Attribute.Value])
+            ) {
+      Assign_Impl(data, child);
+      child.Profitable = data.IsProfitable;
+    }
+  }
+  
+  public void Trim() {
+    Trim_Impl(Root);
+  }
+  
+  private void Trim_Impl(Node node) {
+    
   }
 
   // Measure the number of possible values for each attribute in the training data
@@ -73,11 +99,6 @@ public class Tree {
         }
       }
     }
-    
-
-    // foreach (var attribute in valuesTally_) {
-    //   Console.Out.WriteLine("{0}: {1}", attribute.Key, attribute.Value.Count);
-    // }
   }
 
   private Attribute BestAttribute(List<Data> dataList, Strategy strategy) {
@@ -93,6 +114,11 @@ public class Tree {
             }).Key;
   }
 
+  public override string ToString() {
+    //return Root.Children.Aggregate("", (current, node) => current + ToString_Impl(node, 0));
+    return ToString_Impl(Root, 0);
+  }
+
   private string ToString_Impl(Node node, int depth) {
     var str = "";
     foreach (var child in node.Children) {
@@ -103,10 +129,5 @@ public class Tree {
       str += child + "\n" + ToString_Impl(child, depth + 1);
     }
     return str;
-  }
-
-  public override string ToString() {
-    //return Root.Children.Aggregate("", (current, node) => current + ToString_Impl(node, 0));
-    return ToString_Impl(Root, 0);
   }
 }

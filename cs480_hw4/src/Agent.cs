@@ -8,7 +8,18 @@ public class Agent {
   }
 
   public void Train(List<Data> dataList) {
-    decisionTree_.Update(dataList, decisionTree_.Root, Strategy.LeastValues);
-    Console.Out.WriteLine(decisionTree_);
+    decisionTree_.Build(dataList, Strategy.LeastValues);
+    foreach (var data in dataList) {
+      decisionTree_.Assign(data);
+    }
+    decisionTree_.Trim();
+  }
+
+  public bool Predict(Data data) {
+    return false;
+  }
+
+  public string tree() {
+    return decisionTree_.ToString();
   }
 }
