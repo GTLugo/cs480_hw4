@@ -11,13 +11,10 @@ sw.Stop();
 var trainTime = sw.Elapsed.TotalSeconds;
 
 sw = Stopwatch.StartNew();
-var prediction1 = agent.Predict(testingData[0]);
-var prediction2 = agent.Predict(testingData[1]);
+var accuracy = agent.Test(testingData);
 sw.Stop();
 var testTime = sw.Elapsed.TotalSeconds;
 
-Console.Out.Write("Decision Tree:\n{0}", agent.tree());
-Console.Out.WriteLine("Predictions:\n| Prediction 1: {0} \n| Prediction 2: {1}",
-                      (prediction1) ? "Correct" : "Incorrect",
-                      (prediction2) ? "Correct" : "Incorrect");
+Console.Out.WriteLine("Decision Tree:\n{0}", agent.Tree());
+Console.Out.WriteLine("Prediction Accuracy: {0}%\n", accuracy * 100);
 Console.Out.WriteLine("Elapsed time:\n| Train Time: {0} s\n| Test Time: {1} s", trainTime, testTime);

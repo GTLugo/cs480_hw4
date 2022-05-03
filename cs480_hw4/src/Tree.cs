@@ -6,10 +6,10 @@ public enum Strategy {
 }
 
 public class Node {
-  public Attribute? Attribute = null;
+  public Attribute? Attribute;
   public string Decision = string.Empty;
   public Result Profitable = Result.None;
-  public List<Node> Children = new();
+  public readonly List<Node> Children = new();
   
   public bool IsLeaf() => Profitable != Result.None;
   
@@ -23,14 +23,14 @@ public class Node {
 }
 
 public class Tree {
-  public Node Root = new();
+  private readonly Node root_ = new();
 
   private Dictionary<Attribute, List<string>> valuesTally_ = new();
 
-  private List<Attribute> availableAttributes_ = Enum.GetValues<Attribute>().ToList();
+  private readonly List<Attribute> availableAttributes_ = Enum.GetValues<Attribute>().ToList();
 
   public void Build(List<Data> dataList, Strategy strategy) {
-    Build_Impl(dataList, Root, strategy);
+    Build_Impl(dataList, root_, strategy);
   }
   
   private void Build_Impl(List<Data> dataList, Node node, Strategy strategy) {
@@ -60,7 +60,7 @@ public class Tree {
   }
   
   public void Assign(Data data) {
-    Assign_Impl(data, Root);
+    Assign_Impl(data, root_);
   }
   
   private static void Assign_Impl(Data data, Node node) {
@@ -74,10 +74,10 @@ public class Tree {
   }
   
   public void Trim() {
-    Trim_Impl(Root);
+    Trim_Impl(root_);
   }
   
-  private void Trim_Impl(Node node) {
+  private static void Trim_Impl(Node node) {
     var tempList = new List<Result>();
     foreach (var child in node.Children) {
       Trim_Impl(child);
@@ -126,10 +126,10 @@ public class Tree {
 
   public override string ToString() {
     //return Root.Children.Aggregate("", (current, node) => current + ToString_Impl(node, 0));
-    return ToString_Impl(Root, 0);
+    return ToString_Impl(root_, 0);
   }
 
-  private string ToString_Impl(Node node, int depth) {
+  private static string ToString_Impl(Node node, int depth) {
     var str = "";
     foreach (var child in node.Children) {
       for (var i = 0; i < depth - 1; i++) {
