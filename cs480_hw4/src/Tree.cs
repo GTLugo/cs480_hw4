@@ -8,10 +8,10 @@ public enum Strategy {
 public class Node {
   public Attribute? Attribute = null;
   public string Decision = string.Empty;
-  public bool? Profitable = null;
+  public Result Profitable = Result.None;
   public List<Node> Children = new();
   
-  public bool IsLeaf() => Profitable is not null;
+  public bool IsLeaf() => Profitable != Result.None;
   
   public override string ToString() {
     var str = Attribute + " = " + Decision;
@@ -35,7 +35,7 @@ public class Tree {
   
   private void Build_Impl(List<Data> dataList, Node node, Strategy strategy) {
     if (availableAttributes_.Count == 0) {
-      node.Profitable = false;
+      node.Profitable = Result.No;
       return;
     }
     
@@ -63,13 +63,13 @@ public class Tree {
     Assign_Impl(data, Root);
   }
   
-  private void Assign_Impl(Data data, Node node) {
+  private static void Assign_Impl(Data data, Node node) {
     foreach (var child in node.Children.Where(
                child => child.Attribute != null 
                         && child.Decision == data.Attributes[child.Attribute.Value])
             ) {
       Assign_Impl(data, child);
-      child.Profitable = data.IsProfitable;
+      if (child.IsLeaf()) child.Profitable = data.IsProfitable;
     }
   }
   
@@ -78,7 +78,17 @@ public class Tree {
   }
   
   private void Trim_Impl(Node node) {
+    var tempList = new List<Result>();
+    foreach (var child in node.Children) {
+      Trim_Impl(child);
+      tempList.Add(child.Profitable);
+    }
     
+    if (tempList.Distinct().Count() == 1 && !tempList.Contains(Result.None)) {
+      //Console.Out.WriteLine("Trimming: {0} {1} {2}", node.Attribute, node.Decision, node.Profitable);
+      node.Profitable = tempList[0];
+      node.Children.Clear();
+    }
   }
 
   // Measure the number of possible values for each attribute in the training data

@@ -3,6 +3,12 @@ using Microsoft.VisualBasic.FileIO;
 
 namespace cs480_hw4;
 
+public enum Result {
+  None,
+  Yes,
+  No,
+}
+
 public enum Attribute {
   Price,
   Maintenance,
@@ -21,7 +27,7 @@ public class Data {
     {Attribute.HasAirbag, string.Empty},
   };
 
-  public bool IsProfitable;
+  public Result IsProfitable;
 
   public static List<Data> ReadFromFile(string filePath) {
     var dataList = new List<Data>();
@@ -44,7 +50,11 @@ public class Data {
             { Attribute.Capacity, fields[2] },
             { Attribute.HasAirbag, fields[3] },
           },
-        IsProfitable = "yes".Equals(fields[4]),
+        IsProfitable = fields[4] switch {
+                         "yes" => Result.Yes,
+                         "no"  => Result.No,
+                         _     => throw new ArgumentOutOfRangeException(fields[0])
+                       },
       });
     }
 
