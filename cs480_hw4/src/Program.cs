@@ -6,7 +6,7 @@ var trainingData = Data.ReadFromFile("res/trainData.csv");
 var testingData = Data.ReadFromFile("res/testData.csv");
 
 var sw = Stopwatch.StartNew();
-agent.Train(trainingData);
+agent.Train(trainingData, Strategy.LeastValues);
 sw.Stop();
 var trainTime = sw.Elapsed.TotalSeconds;
 
