@@ -5,7 +5,7 @@ public class Agent {
 
   public void Train(List<Data> dataList) {
     // builds the tree according to the data and the strategy
-    decisionTree_.Build(dataList, Strategy.LeastValues);
+    decisionTree_.Build(dataList, Strategy.MostValues);
     // Assigns the profitable data to the tree
     foreach (var data in dataList) {
       decisionTree_.Assign(data);
@@ -15,7 +15,8 @@ public class Agent {
   }
 
   public float Test(List<Data> dataList) {
-    return 1.0f;
+    var results = dataList.Select(data => decisionTree_.Test(data)).ToList();
+    return (float)results.FindAll(x => x).Count / results.Count;
   }
 
   public string Tree() {

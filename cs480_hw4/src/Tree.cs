@@ -69,8 +69,9 @@ public class Tree {
                         && child.Decision == data.Attributes[child.Attribute.Value])
             ) {
       Assign_Impl(data, child);
-      if (child.IsLeaf()) child.Profitable = data.IsProfitable;
+      return;
     }
+    node.Profitable = data.IsProfitable;
   }
   
   public void Trim() {
@@ -89,6 +90,21 @@ public class Tree {
       node.Profitable = tempList[0];
       node.Children.Clear();
     }
+  }
+  
+  public bool Test(Data data) {
+    return Test_Impl(data, root_);
+  }
+  
+  private static bool Test_Impl(Data data, Node node) {
+    foreach (var child in node.Children.Where(
+               child => child.Attribute != null 
+                        && child.Decision == data.Attributes[child.Attribute.Value])
+            ) {
+      return Test_Impl(data, child);
+    }
+    
+    return data.IsProfitable == node.Profitable;
   }
 
   // Measure the number of possible values for each attribute in the training data
