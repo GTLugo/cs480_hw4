@@ -1,4 +1,4 @@
-# CS 480 - Assignment 2 - Sudoku Solving AI
+# CS 480 - Assignment 4 - Decision Tree AI
 
 ## Usage
 Built in Rider with .NET Core 6.0, C# 9.0.
