@@ -21,5 +21,5 @@ Console.Out.WriteLine("Prediction Accuracy Against TrainingData: {0}%", trainAcc
 Console.Out.WriteLine("Prediction Accuracy Against TestData: {0}%", accuracy * 100);
 Console.Out.WriteLine("Elapsed time:\n| Train Time: {0} s\n| Test Time: {1} s", trainTime, testTime);
 
-Console.Out.WriteLine("Press any key to continue...");
+Console.Out.Write("Press any key to continue...");
 Console.ReadKey();
